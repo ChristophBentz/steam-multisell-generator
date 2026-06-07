@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steam Multisell Link-Generator</title>
+<style>
+  :root {
+    --bg: #1b2838;
+    --bg2: #2a475e;
+    --panel: #223344;
+    --panel2: #2c4257;
+    --accent: #66c0f4;
+    --accent2: #4b9fd6;
+    --green: #5ba32b;
+    --green2: #6fc02f;
+    --text: #c7d5e0;
+    --muted: #8095a3;
+    --danger: #c0563f;
+    --border: #3a546b;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Motiva Sans", "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(180deg, #1b2838 0%, #16202d 100%);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
+  header h1 {
+    font-size: 26px; margin: 0 0 4px; color: #fff; font-weight: 600;
+  }
+  header .sub { color: var(--muted); margin: 0 0 18px; font-size: 14px; }
+  .note {
+    background: #2a3a2a; border-left: 4px solid var(--green2);
+    padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-bottom: 18px;
+  }
+  .warn {
+    background: #3a2f22; border-left: 4px solid #d6a14b; color: #e8d4b0;
+  }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px; margin-bottom: 18px;
+  }
+  .panel h2 {
+    font-size: 16px; margin: 0 0 14px; color: #fff; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel h2 .badge {
+    background: var(--bg2); color: var(--accent); font-size: 12px;
+    padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab {
+    background: var(--bg2); border: none; color: var(--text); cursor: pointer;
+    padding: 8px 14px; border-radius: 6px; font-size: 13px; transition: .15s;
+  }
+  .tab:hover { background: var(--panel2); }
+  .tab.active { background: var(--accent); color: #102a3a; font-weight: 600; }
+  .tabpane { display: none; }
+  .tabpane.active { display: block; }
+  label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+  input[type=text], textarea, select {
+    width: 100%; background: #16202b; border: 1px solid var(--border);
+    color: var(--text); padding: 9px 11px; border-radius: 6px; font-size: 14px;
+    font-family: inherit;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 90px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 120px; }
+  .field { margin-bottom: 12px; }
+  button.btn {
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+    border: none; color: #0c2235; font-weight: 600; cursor: pointer;
+    padding: 9px 18px; border-radius: 6px; font-size: 14px; transition: .15s;
+  }
+  button.btn:hover { filter: brightness(1.1); }
+  button.btn.green {
+    background: linear-gradient(180deg, var(--green2) 0%, var(--green) 100%); color: #fff;
+  }
+  button.btn.ghost {
+    background: var(--bg2); color: var(--text); font-weight: 500;
+  }
+  button.btn.ghost:hover { background: var(--panel2); }
+  button.btn.sm { padding: 5px 10px; font-size: 12px; }
+  button.btn.danger { background: var(--danger); color: #fff; }
+  .item-grid {
+    display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 320px;
+    overflow-y: auto; padding-right: 4px;
+  }
+  .item-chip {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #16202b; border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-size: 14px;
+  }
+  .item-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-chip .meta { color: var(--muted); font-size: 12px; margin-right: auto; padding-left: 10px; }
+  .item-chip .actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .star { background: none; border: none; cursor: pointer; font-size: 16px; color: #5a6b78; }
+  .star.on { color: #f0b429; }
+  .cart-group { margin-bottom: 14px; }
+  .cart-group h3 {
+    font-size: 13px; color: var(--accent); margin: 0 0 6px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .link-box {
+    background: #16202b; border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px; word-break: break-all; color: var(--accent); margin-bottom: 8px;
+  }
+  .empty { color: var(--muted); font-size: 14px; font-style: italic; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--green); color: #fff; padding: 10px 20px; border-radius: 6px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: .25s; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .search { margin-bottom: 10px; }
+  .small { font-size: 12px; color: var(--muted); }
+  a { color: var(--accent); }
+  .hr { height: 1px; background: var(--border); margin: 16px 0; border: none; }
+  details summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+  .count-badge { background: var(--green); color:#fff; border-radius: 10px; padding: 1px 8px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🛒 Steam Multisell Link-Generator</h1>
+    <p class="sub">Items zum Warenkorb hinzufügen → fertigen Steam-Multisell-Link erhalten → mehrere Items gleichzeitig im Markt einstellen.</p>
+  </header>
+
+  <div class="note">
+    <strong>So funktioniert's:</strong> Der erzeugte Link öffnet auf Steam eine Seite, auf der <em>alle</em> deiner Items dieses Typs zum Verkauf bereitstehen. Du wählst dort nur noch Menge &amp; Preis. Es findet <strong>kein Login über diese App</strong> statt – verkauft wird ausschließlich auf steamcommunity.com.
+  </div>
+  <div class="note warn">
+    <strong>Wichtig:</strong> Funktioniert nur für <strong>Commodity-Items</strong> (Cases, Capsules, Sticker, Keys, Sammelkarten). <strong>Skins funktionieren nicht</strong> – Steam zeigt dann eine Fehlermeldung. Eine Stückzahl lässt sich nicht im Link festlegen; die wählst du auf der Steam-Seite.
+  </div>
+
+  <!-- ADD ITEMS -->
+  <div class="panel">
+    <h2>1. Items hinzufügen</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="link">🔗 Market-Link einfügen</button>
+      <button class="tab" data-tab="db">📚 Aus Liste wählen</button>
+      <button class="tab" data-tab="manual">✏️ Manuell</button>
+    </div>
+
+    <!-- TAB: link parser -->
+    <div class="tabpane active" id="tab-link">
+      <div class="field">
+        <label>Steam-Market-Link(s) – einer pro Zeile</label>
+        <textarea id="linkInput" placeholder="https://steamcommunity.com/market/listings/730/Kilowatt%20Case&#10;https://steamcommunity.com/market/listings/440/Mann%20Co.%20Supply%20Crate%20Key"></textarea>
+      </div>
+      <button class="btn" id="parseBtn">Links auslesen &amp; hinzufügen</button>
+      <p class="small" style="margin-top:8px">Öffne ein Item im Steam-Markt und kopiere die Adresse aus der Browserzeile. App + Item-Name werden automatisch erkannt.</p>
+    </div>
+
+    <!-- TAB: database -->
+    <div class="tabpane" id="tab-db">
+      <div class="row" style="margin-bottom:12px">
+        <div>
+          <label>Spiel</label>
+          <select id="gameSelect"></select>
+        </div>
+      </div>
+      <input class="search" type="text" id="dbSearch" placeholder="Items filtern…">
+      <div class="item-grid" id="dbList"></div>
+    </div>
+
+    <!-- TAB: manual -->
+    <div class="tabpane" id="tab-manual">
+      <div class="row">
+        <div class="field">
+          <label>App-ID (Spiel)</label>
+          <input type="text" id="mAppid" placeholder="730">
+        </div>
+        <div class="field">
+          <label>Context-ID</label>
+          <input type="text" id="mContext" placeholder="2" value="2">
+        </div>
+      </div>
+      <div class="field">
+        <label>Item-Name (exakt, wie im Markt – Groß/Kleinschreibung beachten)</label>
+        <input type="text" id="mName" placeholder="Kilowatt Case">
+      </div>
+      <button class="btn" id="manualAddBtn">Zum Warenkorb hinzufügen</button>
+      <p class="small" style="margin-top:8px">App-IDs: CS2 = 730, TF2 = 440, Dota 2 = 570. Context-ID ist meist <code>2</code> (Sammelkarten oft <code>6</code>).</p>
+    </div>
+  </div>
+
+  <!-- FAVORITES -->
+  <div class="panel" id="favPanel" style="display:none">
+    <h2>⭐ Favoriten</h2>
+    <div class="item-grid" id="favList"></div>
+  </div>
+
+  <!-- CART -->
+  <div class="panel">
+    <h2>2. Warenkorb <span class="badge" id="cartCount">0</span></h2>
+    <div id="cartArea"><p class="empty">Noch keine Items im Warenkorb.</p></div>
+    <hr class="hr" id="cartHr" style="display:none">
+    <div id="cartActions" style="display:none">
+      <button class="btn ghost sm danger" id="clearCart">Warenkorb leeren</button>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="panel">
+    <h2>3. Multisell-Link(s)</h2>
+    <p class="small" id="linkHint">Pro Spiel wird ein eigener Link erzeugt (Steam erlaubt nur ein Spiel pro Link).</p>
+    <div id="linksArea"><p class="empty">Füge Items hinzu, um Links zu erzeugen.</p></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="panel" id="histPanel" style="display:none">
+    <h2>🕒 Verlauf</h2>
+    <div id="histList"></div>
+    <hr class="hr">
+    <button class="btn ghost sm danger" id="clearHist">Verlauf löschen</button>
+  </div>
+
+  <p class="small" style="text-align:center;margin-top:30px">
+    Inoffizielles Tool · keine Verbindung zu Valve/Steam · alle Daten bleiben lokal im Browser.
+  </p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+// ---------- Item-Datenbank (kuratierte Commodity-Items) ----------
+const GAMES = {
+  "730": {
+    name: "CS2 / CS:GO", contextid: "2",
+    items: [
+      "Kilowatt Case","Gallery Case","Fever Case","Revolution Case","Recoil Case",
+      "Dreams & Nightmares Case","Snakebite Case","Operation Riptide Case","Fracture Case",
+      "Clutch Case","Danger Zone Case","Prisma Case","Prisma 2 Case","Horizon Case",
+      "Spectrum Case","Spectrum 2 Case","Glove Case","Chroma Case","Chroma 2 Case",
+      "Chroma 3 Case","Falchion Case","Shadow Case","Gamma Case","Gamma 2 Case",
+      "Operation Breakout Weapon Case","Operation Phoenix Weapon Case","Winter Offensive Weapon Case",
+      "Esports 2013 Case","CS:GO Weapon Case","CS:GO Weapon Case 2","CS:GO Weapon Case 3"
+    ]
+  },
+  "440": {
+    name: "Team Fortress 2", contextid: "2",
+    items: [
+      "Mann Co. Supply Crate Key","Tour of Duty Ticket","Mann Co. Audition Reel",
+      "Refined Metal","Reclaimed Metal","Scrap Metal"
+    ]
+  },
+  "570": {
+    name: "Dota 2", contextid: "2",
+    items: [
+      "Mann Co. Supply Crate Key"
+    ]
+  },
+  "753": {
+    name: "Steam (Sammelkarten / Hintergründe)", contextid: "6",
+    items: []
+  }
+};
+
+// ---------- Storage ----------
+const LS = {
+  cart: "sms_cart_v1",
+  fav: "sms_fav_v1",
+  hist: "sms_hist_v1"
+};
+const load = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
+const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+let cart = load(LS.cart, []);      // [{appid, contextid, name}]
+let favs = load(LS.fav, []);       // [{appid, contextid, name}]
+let hist = load(LS.hist, []);      // [{date, links:[{appid,name,url}]}]
+
+// ---------- Helpers ----------
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const keyOf = it => `${it.appid}|${it.contextid}|${it.name}`;
+const gameName = appid => GAMES[appid]?.name || `App ${appid}`;
+
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+function buildLinks() {
+  // gruppiere nach appid+contextid
+  const groups = {};
+  for (const it of cart) {
+    const g = `${it.appid}|${it.contextid}`;
+    (groups[g] ||= []).push(it.name);
+  }
+  return Object.entries(groups).map(([g, names]) => {
+    const [appid, contextid] = g.split("|");
+    const params = names.map(n => "items[]=" + encodeURIComponent(n)).join("&");
+    return {
+      appid, contextid, names,
+      url: `https://steamcommunity.com/market/multisell?appid=${appid}&contextid=${contextid}&${params}`
+    };
+  });
+}
+
+function addToCart(it) {
+  it = { appid: String(it.appid).trim(), contextid: String(it.contextid || "2").trim(), name: it.name.trim() };
+  if (!it.appid || !it.name) { toast("App-ID und Name nötig"); return; }
+  if (cart.some(c => keyOf(c) === keyOf(it))) { toast("Schon im Warenkorb"); return; }
+  cart.push(it); save(LS.cart, cart); renderCart(); renderLinks();
+  toast("Hinzugefügt: " + it.name);
+}
+
+function removeFromCart(k) {
+  cart = cart.filter(c => keyOf(c) !== k); save(LS.cart, cart); renderCart(); renderLinks();
+}
+
+function toggleFav(it) {
+  it = { appid: String(it.appid), contextid: String(it.contextid || "2"), name: it.name };
+  const k = keyOf(it);
+  if (favs.some(f => keyOf(f) === k)) favs = favs.filter(f => keyOf(f) !== k);
+  else favs.push(it);
+  save(LS.fav, favs); renderFavs(); renderDb();
+}
+const isFav = it => favs.some(f => keyOf(f) === keyOf({appid:String(it.appid),contextid:String(it.contextid||"2"),name:it.name}));
+
+async function copyText(txt) {
+  try { await navigator.clipboard.writeText(txt); toast("Link kopiert ✔"); }
+  catch {
+    const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); ta.remove(); toast("Link kopiert ✔");
+  }
+}
+
+// ---------- Render ----------
+function renderCart() {
+  const area = $("#cartArea");
+  $("#cartCount").textContent = cart.length;
+  if (!cart.length) {
+    area.innerHTML = '<p class="empty">Noch keine Items im Warenkorb.</p>';
+    $("#cartHr").style.display = "none"; $("#cartActions").style.display = "none";
+    return;
+  }
+  $("#cartHr").style.display = "block"; $("#cartActions").style.display = "block";
+  const groups = {};
+  for (const it of cart) (groups[`${it.appid}|${it.contextid}`] ||= []).push(it);
+  area.innerHTML = Object.entries(groups).map(([g, items]) => {
+    const [appid, ctx] = g.split("|");
+    return `<div class="cart-group">
+      <h3>${gameName(appid)} <span class="small">(App ${appid}, ctx ${ctx})</span> <span class="count-badge">${items.length}</span></h3>
+      ${items.map(it => `<div class="item-chip">
+        <span class="name">${escapeHtml(it.name)}</span>
+        <span class="actions">
+          <button class="star ${isFav(it)?'on':''}" data-fav='${attr(it)}' title="Favorit">★</button>
+          <button class="btn ghost sm" data-rm="${escapeHtml(keyOf(it))}">Entfernen</button>
+        </span></div>`).join("")}
+    </div>`;
+  }).join("");
+}
+
+function renderLinks() {
+  const area = $("#linksArea");
+  if (!cart.length) { area.innerHTML = '<p class="empty">Füge Items hinzu, um Links zu erzeugen.</p>'; return; }
+  const links = buildLinks();
+  area.innerHTML = links.map((l, i) => `
+    <div class="cart-group">
+      <h3>${gameName(l.appid)} <span class="small">· ${l.names.length} Item(s)</span></h3>
+      <div class="link-box">${escapeHtml(l.url)}</div>
+      <button class="btn green sm" data-open="${i}">▶ In Steam öffnen</button>
+      <button class="btn ghost sm" data-copy="${i}">📋 Kopieren</button>
+    </div>`).join("");
+  area._links = links;
+}
+
+function renderFavs() {
+  const panel = $("#favPanel"), list = $("#favList");
+  if (!favs.length) { panel.style.display = "none"; return; }
+  panel.style.display = "block";
+  list.innerHTML = favs.map(it => `<div class="item-chip">
+    <span class="name">${escapeHtml(it.name)}</span>
+    <span class="meta">${gameName(it.appid)}</span>
+    <span class="actions">
+      <button class="btn green sm" data-addfav='${attr(it)}'>+ Warenkorb</button>
+      <button class="star on" data-fav='${attr(it)}'>★</button>
+    </span></div>`).join("");
+}
+
+function renderDb() {
+  const appid = $("#gameSelect").value;
+  const q = $("#dbSearch").value.toLowerCase();
+  const game = GAMES[appid];
+  const list = $("#dbList");
+  const items = (game?.items || []).filter(n => n.toLowerCase().includes(q));
+  if (!items.length) {
+    list.innerHTML = '<p class="empty">Keine Items – nutze „Market-Link einfügen" oder „Manuell".</p>';
+    return;
+  }
+  list.innerHTML = items.map(name => {
+    const it = { appid, contextid: game.contextid, name };
+    return `<div class="item-chip">
+      <span class="name">${escapeHtml(name)}</span>
+      <span class="actions">
+        <button class="star ${isFav(it)?'on':''}" data-fav='${attr(it)}'>★</button>
+        <button class="btn green sm" data-add='${attr(it)}'>+ Warenkorb</button>
+      </span></div>`;
+  }).join("");
+}
+
+function renderHist() {
+  const panel = $("#histPanel"), list = $("#histList");
+  if (!hist.length) { panel.style.display = "none"; return; }
+  panel.style.display = "block";
+  list.innerHTML = hist.slice().reverse().map(h => `
+    <div class="cart-group">
+      <h3>${new Date(h.date).toLocaleString("de-DE")}</h3>
+      ${h.links.map(l => `<div class="item-chip">
+        <span class="name">${gameName(l.appid)} · ${l.names.length} Item(s)</span>
+        <span class="actions">
+          <button class="btn green sm" data-histopen="${escapeHtml(l.url)}">▶ Öffnen</button>
+          <button class="btn ghost sm" data-histcopy="${escapeHtml(l.url)}">📋</button>
+        </span></div>`).join("")}
+    </div>`).join("");
+}
+
+// ---------- Link-Parser ----------
+function parseMarketLinks(text) {
+  const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  let added = 0, failed = 0;
+  for (const line of lines) {
+    // /market/listings/{appid}/{market_hash_name}
+    const m = line.match(/market\/listings\/(\d+)\/([^/?#\s]+)/i);
+    if (!m) { failed++; continue; }
+    const appid = m[1];
+    let name;
+    try { name = decodeURIComponent(m[2]); } catch { name = m[2]; }
+    name = name.replace(/\+/g, " ");
+    const contextid = GAMES[appid]?.contextid || "2";
+    const it = { appid, contextid, name };
+    if (!cart.some(c => keyOf(c) === keyOf(it))) { cart.push(it); added++; }
+  }
+  if (added) { save(LS.cart, cart); renderCart(); renderLinks(); }
+  if (added && !failed) toast(`${added} Item(s) hinzugefügt`);
+  else if (added && failed) toast(`${added} hinzugefügt, ${failed} nicht erkannt`);
+  else toast("Keine gültigen Market-Links erkannt");
+}
+
+function recordHistory(links) {
+  hist.push({ date: Date.now(), links: links.map(l => ({ appid: l.appid, names: l.names, url: l.url })) });
+  hist = hist.slice(-20);
+  save(LS.hist, hist); renderHist();
+}
+
+// ---------- Utils ----------
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function attr(it){ return escapeHtml(JSON.stringify({appid:String(it.appid),contextid:String(it.contextid||"2"),name:it.name})); }
+function parseAttr(s){ return JSON.parse(s); }
+
+// ---------- Events ----------
+$$(".tab").forEach(t => t.addEventListener("click", () => {
+  $$(".tab").forEach(x => x.classList.remove("active"));
+  $$(".tabpane").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  $("#tab-" + t.dataset.tab).classList.add("active");
+}));
+
+$("#parseBtn").addEventListener("click", () => {
+  const v = $("#linkInput").value;
+  if (!v.trim()) { toast("Bitte Link(s) einfügen"); return; }
+  parseMarketLinks(v); $("#linkInput").value = "";
+});
+
+$("#manualAddBtn").addEventListener("click", () => {
+  addToCart({ appid: $("#mAppid").value, contextid: $("#mContext").value, name: $("#mName").value });
+  $("#mName").value = "";
+});
+
+$("#dbSearch").addEventListener("input", renderDb);
+$("#gameSelect").addEventListener("change", renderDb);
+
+// Delegierte Klicks
+document.body.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.add) addToCart(parseAttr(t.dataset.add));
+  if (t.dataset.addfav) addToCart(parseAttr(t.dataset.addfav));
+  if (t.dataset.fav) toggleFav(parseAttr(t.dataset.fav));
+  if (t.dataset.rm) removeFromCart(t.dataset.rm);
+  if (t.dataset.copy !== undefined && $("#linksArea")._links) copyText($("#linksArea")._links[+t.dataset.copy].url);
+  if (t.dataset.open !== undefined && $("#linksArea")._links) {
+    const l = $("#linksArea")._links[+t.dataset.open];
+    window.open(l.url, "_blank"); recordHistory([l]);
+  }
+  if (t.dataset.histopen) window.open(t.dataset.histopen, "_blank");
+  if (t.dataset.histcopy) copyText(t.dataset.histcopy);
+});
+
+$("#clearCart").addEventListener("click", () => {
+  if (confirm("Warenkorb wirklich leeren?")) { cart = []; save(LS.cart, cart); renderCart(); renderLinks(); }
+});
+$("#clearHist").addEventListener("click", () => {
+  if (confirm("Verlauf löschen?")) { hist = []; save(LS.hist, hist); renderHist(); }
+});
+
+// ---------- Init ----------
+$("#gameSelect").innerHTML = Object.entries(GAMES)
+  .map(([id, g]) => `<option value="${id}">${g.name} (App ${id})</option>`).join("");
+renderCart(); renderLinks(); renderFavs(); renderDb(); renderHist();
+</script>
+</body>
+</html>
