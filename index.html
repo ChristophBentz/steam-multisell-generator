@@ -49,32 +49,31 @@
   /* Input */
   .inputwrap { position: relative; }
   .inputbar {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-    padding: 6px 6px 6px 7px; box-shadow: var(--shadow);
-    transition: border-color .18s, box-shadow .18s;
+    display: flex; align-items: center; gap: 12px;
+    background: transparent; border: none; border-bottom: 1.5px solid var(--line);
+    padding: 8px 2px; transition: border-color .2s;
   }
-  .inputbar:focus-within { border-color: rgba(102,192,244,.5); box-shadow: var(--shadow), 0 0 0 4px rgba(102,192,244,.1); }
+  .inputbar:focus-within { border-bottom-color: var(--accent); }
   .gamepick {
     appearance: none; border: none; cursor: pointer; flex-shrink: 0;
-    background: var(--card-2); color: var(--txt-dim); border-radius: 11px;
-    font: inherit; font-size: 12.5px; font-weight: 600; max-width: 118px;
-    padding: 11px 30px 11px 13px; transition: color .15s, background .15s;
+    background: transparent; color: var(--txt-dim); border-radius: 0;
+    font: inherit; font-size: 13px; font-weight: 600; max-width: 112px;
+    padding: 6px 21px 6px 0; transition: color .15s;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%2394a5b6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    background-repeat: no-repeat; background-position: right 11px center;
+    background-repeat: no-repeat; background-position: right 3px center;
   }
-  .gamepick:hover { color: var(--txt); background: var(--line-soft); }
+  .gamepick:hover { color: var(--txt); }
   .gamepick:focus { outline: none; }
-  #mainInput { flex: 1; min-width: 0; border: none; background: transparent; color: var(--txt); font: inherit; font-size: 15px; padding: 10px 6px; }
+  #mainInput { flex: 1; min-width: 0; border: none; background: transparent; color: var(--txt); font: inherit; font-size: 16px; padding: 6px 0; }
   #mainInput:focus { outline: none; }
   #mainInput::placeholder { color: var(--txt-faint); }
   .addbtn {
-    flex-shrink: 0; border: none; cursor: pointer; font: inherit; font-weight: 650; font-size: 14px;
-    padding: 11px 20px; border-radius: 11px; color: #08283c; background: var(--accent);
-    transition: filter .15s, transform .1s;
+    flex-shrink: 0; border: none; cursor: pointer; background: transparent;
+    color: var(--txt-faint); font-size: 20px; line-height: 1; padding: 6px 8px;
+    border-radius: 8px; transition: color .15s, transform .12s;
   }
-  .addbtn:hover { filter: brightness(1.06); }
-  .addbtn:active { transform: translateY(.5px); }
+  .addbtn:hover { color: var(--accent); transform: translateX(2px); }
+  .addbtn:active { transform: translateX(3px); }
 
   /* Live status under input */
   .status { min-height: 20px; margin: 11px 4px 0; font-size: 12.5px; color: var(--txt-faint); text-align: center; transition: color .15s; }
@@ -155,9 +154,9 @@
 
   @media (max-width: 520px) {
     .wrap { padding: 34px 14px 70px; }
-    .gamepick { max-width: 84px; padding-left: 11px; font-size: 11.5px; }
-    #mainInput { padding: 9px 4px; font-size: 14px; }
-    .addbtn { padding: 11px 14px; }
+    .gamepick { max-width: 84px; font-size: 12.5px; }
+    #mainInput { font-size: 15px; }
+    .addbtn { font-size: 19px; }
   }
 </style>
 </head>
@@ -174,7 +173,7 @@
       <select class="gamepick" id="gamePick" title="Spiel für getippte Namen"></select>
       <input type="text" id="mainInput" autocomplete="off" spellcheck="false"
              placeholder="Item-Namen tippen oder Market-Link einfügen…">
-      <button class="addbtn" id="addBtn">Hinzufügen</button>
+      <button class="addbtn" id="addBtn" title="Hinzufügen" aria-label="Hinzufügen">→</button>
     </div>
     <div class="suggest" id="suggest"></div>
   </div>
