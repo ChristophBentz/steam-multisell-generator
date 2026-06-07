@@ -361,7 +361,7 @@ function buildSuggestions(q){
   for (const [appid, g] of Object.entries(GAMES))
     for (const name of g.items)
       if (name.toLowerCase().includes(q)) out.push({ appid, contextid:g.contextid, name });
-  return out.slice(0, 8);
+  return out.slice(0, 50);
 }
 function renderSuggest(q){
   const box = $("#suggest");
