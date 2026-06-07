@@ -245,7 +245,6 @@ async function loadCS2Catalog(){
     GAMES["730"].items.forEach(n => set.add(n));  // eingebaute zusätzlich behalten
     GAMES["730"].items = Array.from(set);
     csCount = names.length;
-    toast(`${csCount} CS2-Container geladen`);
   } catch (e) {
     csCount = 0; // offline -> eingebaute Liste bleibt aktiv
   }
@@ -322,12 +321,7 @@ function updateStatus(){
   const s = $("#status");
   const gp = $("#gamePick");
   gp.style.display = "none"; // nur sichtbar, wenn das Spiel wirklich gewählt werden muss
-  if (!v){
-    s.innerHTML = csCount
-      ? `<span class="ok">${csCount} CS2-Container geladen</span> · tippen oder Market-Link einfügen`
-      : "Enter zum Hinzufügen · Market-Link wird erkannt";
-    return;
-  }
+  if (!v){ s.innerHTML = ""; return; }
   if (isLink(v)){
     const lines = v.split(/\r?\n/).filter(l=>l.trim());
     const ok = lines.filter(l=>parseLinkLine(l)).length;
