@@ -49,28 +49,31 @@
   /* Input */
   .inputwrap { position: relative; }
   .inputbar {
-    display: flex; align-items: stretch; background: var(--card);
-    border: 1.5px solid var(--line); border-radius: var(--r);
-    box-shadow: var(--shadow); overflow: hidden; transition: border-color .15s, box-shadow .15s;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 6px 6px 6px 7px; box-shadow: var(--shadow);
+    transition: border-color .18s, box-shadow .18s;
   }
-  .inputbar:focus-within { border-color: var(--accent-d); box-shadow: var(--shadow), 0 0 0 4px rgba(102,192,244,.12); }
+  .inputbar:focus-within { border-color: rgba(102,192,244,.5); box-shadow: var(--shadow), 0 0 0 4px rgba(102,192,244,.1); }
   .gamepick {
-    appearance: none; border: none; background: var(--card-2); color: var(--txt-dim);
-    font: inherit; font-size: 13px; font-weight: 650; cursor: pointer;
-    padding: 0 30px 0 16px; border-right: 1px solid var(--line); max-width: 124px;
+    appearance: none; border: none; cursor: pointer; flex-shrink: 0;
+    background: var(--card-2); color: var(--txt-dim); border-radius: 11px;
+    font: inherit; font-size: 12.5px; font-weight: 600; max-width: 118px;
+    padding: 11px 30px 11px 13px; transition: color .15s, background .15s;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%2394a5b6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    background-repeat: no-repeat; background-position: right 12px center;
+    background-repeat: no-repeat; background-position: right 11px center;
   }
+  .gamepick:hover { color: var(--txt); background: var(--line-soft); }
   .gamepick:focus { outline: none; }
-  #mainInput { flex: 1; min-width: 0; border: none; background: transparent; color: var(--txt); font: inherit; font-size: 15px; padding: 16px; }
+  #mainInput { flex: 1; min-width: 0; border: none; background: transparent; color: var(--txt); font: inherit; font-size: 15px; padding: 10px 6px; }
   #mainInput:focus { outline: none; }
   #mainInput::placeholder { color: var(--txt-faint); }
   .addbtn {
-    border: none; cursor: pointer; font: inherit; font-weight: 660; font-size: 15px;
-    padding: 0 22px; color: #08283c; background: linear-gradient(180deg, var(--accent), var(--accent-d));
-    transition: filter .15s; flex-shrink: 0;
+    flex-shrink: 0; border: none; cursor: pointer; font: inherit; font-weight: 650; font-size: 14px;
+    padding: 11px 20px; border-radius: 11px; color: #08283c; background: var(--accent);
+    transition: filter .15s, transform .1s;
   }
-  .addbtn:hover { filter: brightness(1.08); }
+  .addbtn:hover { filter: brightness(1.06); }
   .addbtn:active { transform: translateY(.5px); }
 
   /* Live status under input */
@@ -152,9 +155,9 @@
 
   @media (max-width: 520px) {
     .wrap { padding: 34px 14px 70px; }
-    .gamepick { max-width: 92px; padding-left: 12px; font-size: 12px; }
-    #mainInput { padding: 14px 12px; }
-    .addbtn { padding: 0 16px; }
+    .gamepick { max-width: 84px; padding-left: 11px; font-size: 11.5px; }
+    #mainInput { padding: 9px 4px; font-size: 14px; }
+    .addbtn { padding: 11px 14px; }
   }
 </style>
 </head>
