@@ -35,12 +35,18 @@ Installation und **kein Steam-Login** in der App nötig. Einfach im Browser öff
 
 ## App-IDs (häufig)
 
-| Spiel    | App-ID | Context-ID |
-|----------|--------|------------|
-| CS2/CS:GO| 730    | 2          |
-| TF2      | 440    | 2          |
-| Dota 2   | 570    | 2          |
-| Steam (Karten) | 753 | 6      |
+| Spiel    | App-ID | Context-ID | Eingebaute Liste |
+|----------|--------|------------|------------------|
+| CS2/CS:GO| 730    | 2          | ✅ voll (Live-Katalog, ~462 Container) |
+| TF2      | 440    | 2          | ✅ Keys, Tickets, Tools, Crate-Serien |
+| Dota 2   | 570    | 2          | Market-Link nutzen |
+| Rust     | 252490 | 2          | Market-Link nutzen |
+| PUBG     | 578080 | 2          | Market-Link nutzen |
+| Steam (Karten) | 753 | 6      | Market-Link nutzen |
+
+> Nur CS2 hat eine saubere, CORS-fähige Katalog-API ([ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API)).
+> Für die übrigen Spiele ist das Einfügen des Market-Links der zuverlässige Weg – damit
+> funktioniert jedes Commodity-Item exakt.
 
 ## Lizenz
 

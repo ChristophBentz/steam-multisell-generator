@@ -226,11 +226,17 @@ const GAMES = {
     "Sticker Capsule","Sticker Capsule 2","Community Sticker Capsule 1"
   ] },
   "440": { name: "TF2", contextid: "2", items: [
-    "Mann Co. Supply Crate Key","Tour of Duty Ticket","Mann Co. Audition Reel",
-    "Refined Metal","Reclaimed Metal","Scrap Metal" ] },
-  "570": { name: "Dota 2", contextid: "2", items: [ "Mann Co. Supply Crate Key" ] },
+    "Mann Co. Supply Crate Key","Tour of Duty Ticket","Squad Surplus Voucher",
+    "Mann Co. Audition Reel","Name Tag","Description Tag","Gift Wrap","Backpack Expander"
+    /* + generierte "Mann Co. Supply Crate Series #N" siehe unten */ ] },
+  "570": { name: "Dota 2", contextid: "2", items: [] },
+  "252490": { name: "Rust", contextid: "2", items: [] },
+  "578080": { name: "PUBG", contextid: "2", items: [] },
   "753": { name: "Steam-Karten", contextid: "6", items: [] }
 };
+// TF2: häufige Commodity-Crates ergänzen (Serie #1–#100). Nicht existierende Nummern
+// schaden nicht – Steam zeigt dann einfach nichts an; verkauft wird nur, was du besitzt.
+for (let i = 1; i <= 100; i++) GAMES["440"].items.push(`Mann Co. Supply Crate Series #${i}`);
 
 // ---------- Live-Katalog (alle CS2-Container) ----------
 // Schlanke Namensliste im eigenen Repo (aus ByMykel/CSGO-API generiert, CORS-fähig).
