@@ -292,6 +292,9 @@ async function copyText(t){ try{ await navigator.clipboard.writeText(t); toast("
 
 // ---------- Smart input ----------
 const isLink = s => /market\/listings\//i.test(s);
+// Manche Listing-URLs enthalten einen Steam-Item-CODE (z.B. G18D2253004) statt des
+// Namens. Multisell braucht aber den Namen -> solche Codes erkennen und warnen.
+const looksLikeCode = s => /^[A-Za-z0-9]+$/.test(s) && /\d/.test(s) && /[A-Za-z]/.test(s) && s.length >= 6;
 function parseLinkLine(line){
   const m = line.match(/market\/listings\/(\d+)\/([^/?#\s]+)/i);
   if (!m) return null;
@@ -302,12 +305,17 @@ function submitInput(){
   const raw = $("#mainInput").value.trim();
   if (!raw) { toast("Bitte etwas eingeben"); return; }
   if (isLink(raw)) {
-    let added=0, failed=0;
+    let added=0, failed=0, codes=0;
     raw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).forEach(line=>{
       const it = parseLinkLine(line);
-      if (it && addToCart(it, true)) added++; else if(!it) failed++;
+      if (!it) { failed++; return; }
+      if (looksLikeCode(it.name)) { codes++; return; }          // Code statt Name -> überspringen
+      const g = GAMES[it.appid];
+      if (g) { const exact = g.items.find(n => n.toLowerCase() === it.name.toLowerCase()); if (exact) it.name = exact; } // exakte Schreibweise
+      if (addToCart(it, true)) added++;
     });
-    toast(added ? `${added} Item(s) hinzugefügt${failed?`, ${failed} ignoriert`:""}` : "Kein gültiger Link erkannt");
+    if (codes) toast("Link enthält einen Item-Code statt des Namens – tippe lieber den Item-Namen.");
+    else toast(added ? `${added} Item(s) hinzugefügt${failed?`, ${failed} ignoriert`:""}` : "Kein gültiger Link erkannt");
   } else {
     const appid = $("#gamePick").value;
     addToCart({ appid, contextid: GAMES[appid].contextid, name: raw });
@@ -324,8 +332,11 @@ function updateStatus(){
   if (!v){ s.innerHTML = ""; return; }
   if (isLink(v)){
     const lines = v.split(/\r?\n/).filter(l=>l.trim());
-    const ok = lines.filter(l=>parseLinkLine(l)).length;
-    s.innerHTML = `<span class="lnk">${ok} Link(s) erkannt</span> – Enter zum Hinzufügen`;
+    let ok=0, code=0;
+    lines.forEach(l=>{ const it=parseLinkLine(l); if(!it) return; looksLikeCode(it.name) ? code++ : ok++; });
+    s.innerHTML = code
+      ? `<span class="lnk">Link enthält Item-Code</span> statt Name – tippe lieber den Item-Namen`
+      : `<span class="lnk">${ok} Link(s) erkannt</span> – Enter zum Hinzufügen`;
     return;
   }
   const matches = buildSuggestions(v);
