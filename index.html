@@ -232,6 +232,27 @@ const GAMES = {
   "753": { name: "Steam-Karten", contextid: "6", items: [] }
 };
 
+// ---------- Live-Katalog (alle CS2-Container) ----------
+// Schlanke Namensliste im eigenen Repo (aus ByMykel/CSGO-API generiert, CORS-fähig).
+// Fallback: eingebaute Liste oben, falls offline.
+let csCount = 0;
+async function loadCS2Catalog(){
+  try {
+    const res = await fetch("https://raw.githubusercontent.com/ChristophBentz/steam-multisell-generator/main/cs2-items.json", { cache: "force-cache" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const names = await res.json();
+    if (!Array.isArray(names) || !names.length) throw new Error("leer");
+    const set = new Set(names);                   // alle Container aus dem Katalog
+    GAMES["730"].items.forEach(n => set.add(n));  // eingebaute zusätzlich behalten
+    GAMES["730"].items = Array.from(set);
+    csCount = names.length;
+    toast(`✓ ${csCount} CS2-Container geladen`);
+  } catch (e) {
+    csCount = 0; // offline -> eingebaute Liste bleibt aktiv
+  }
+  updateStatus();
+}
+
 // ---------- Storage ----------
 const LS = { cart: "sms_cart_v1", fav: "sms_fav_v1", hist: "sms_hist_v1" };
 const load = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
@@ -300,7 +321,12 @@ function submitInput(){
 function updateStatus(){
   const v = $("#mainInput").value.trim();
   const s = $("#status");
-  if (!v){ s.innerHTML = "Enter zum Hinzufügen · Market-Link wird automatisch erkannt"; return; }
+  if (!v){
+    s.innerHTML = csCount
+      ? `<span class="ok">${csCount} CS2-Container geladen</span> · tippen oder Market-Link einfügen`
+      : "Enter zum Hinzufügen · Market-Link wird automatisch erkannt";
+    return;
+  }
   if (isLink(v)){
     const lines = v.split(/\r?\n/).filter(l=>l.trim());
     const ok = lines.filter(l=>parseLinkLine(l)).length;
@@ -447,6 +473,7 @@ $("#clearHist").addEventListener("click", ()=>{ if(confirm("Verlauf löschen?"))
 // ---------- Init ----------
 $("#gamePick").innerHTML = Object.entries(GAMES).map(([id,g])=>`<option value="${id}">${g.name}</option>`).join("");
 renderAll(); updateStatus(); $("#mainInput").focus();
+loadCS2Catalog();
 </script>
 </body>
 </html>
