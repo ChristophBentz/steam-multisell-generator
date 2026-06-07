@@ -161,7 +161,7 @@
 
   <div class="inputwrap">
     <div class="inputbar">
-      <select class="gamepick" id="gamePick" title="Spiel für getippte Namen"></select>
+      <select class="gamepick" id="gamePick" title="Spiel für getippte Namen" style="display:none"></select>
       <input type="text" id="mainInput" autocomplete="off" spellcheck="false"
              placeholder="Item-Namen tippen oder Market-Link einfügen…">
       <button class="addbtn" id="addBtn" title="Hinzufügen" aria-label="Hinzufügen">→</button>
@@ -320,6 +320,8 @@ function submitInput(){
 function updateStatus(){
   const v = $("#mainInput").value.trim();
   const s = $("#status");
+  const gp = $("#gamePick");
+  gp.style.display = "none"; // nur sichtbar, wenn das Spiel wirklich gewählt werden muss
   if (!v){
     s.innerHTML = csCount
       ? `<span class="ok">${csCount} CS2-Container geladen</span> · tippen oder Market-Link einfügen`
@@ -336,8 +338,9 @@ function updateStatus(){
   if (matches.length){
     s.innerHTML = `<span class="ok">${matches.length} Treffer</span> – auswählen oder Enter`;
   } else {
-    const g = gameName($("#gamePick").value);
-    s.innerHTML = `Kein Treffer – wird als <b>${g}</b>-Item hinzugefügt. Sicherer: <b>Market-Link</b> einfügen.`;
+    gp.style.display = ""; // kein Katalogtreffer -> Spiel muss bekannt sein
+    const g = gameName(gp.value);
+    s.innerHTML = `Kein Treffer – als <b>${g}</b>-Item hinzufügen (Spiel links wählbar). Sicherer: <b>Market-Link</b>.`;
   }
 }
 
