@@ -353,7 +353,8 @@ function updateStatus(){
 }
 
 // ---------- Autocomplete ----------
-let sugItems = [], sugIdx = -1;
+let sugItems = [], sugIdx = -1, sugTotal = 0;
+const SUG_RENDER_MAX = 200; // gerendert (Liste scrollt); Rest als Hinweis
 function buildSuggestions(q){
   q = q.toLowerCase().trim();
   if (!q || isLink(q)) return [];
@@ -361,12 +362,14 @@ function buildSuggestions(q){
   for (const [appid, g] of Object.entries(GAMES))
     for (const name of g.items)
       if (name.toLowerCase().includes(q)) out.push({ appid, contextid:g.contextid, name });
-  return out.slice(0, 50);
+  return out;
 }
 function renderSuggest(q){
   const box = $("#suggest");
   const list = sugItems.map((it,i)=>`<div class="sug ${i===sugIdx?'active':''}" data-i="${i}">
       <span class="nm">${escapeHtml(it.name)}</span><span class="tag">${escapeHtml(gameName(it.appid))}</span></div>`);
+  if (sugTotal > sugItems.length)
+    list.push(`<div class="sug" style="cursor:default;color:var(--txt-faint)"><span class="nm">… ${sugTotal - sugItems.length} weitere – Suchbegriff verfeinern</span></div>`);
   // Fallback: freien Namen als gewähltes Spiel hinzufügen
   if (q && !isLink(q)){
     const g = gameName($("#gamePick").value);
@@ -441,7 +444,8 @@ function parseAttr(s){ return JSON.parse(s); }
 $("#addBtn").addEventListener("click", submitInput);
 $("#gamePick").addEventListener("change", updateStatus);
 $("#mainInput").addEventListener("input", e=>{
-  sugItems = buildSuggestions(e.target.value); sugIdx=-1; renderSuggest(e.target.value.trim()); updateStatus();
+  const all = buildSuggestions(e.target.value); sugTotal = all.length;
+  sugItems = all.slice(0, SUG_RENDER_MAX); sugIdx=-1; renderSuggest(e.target.value.trim()); updateStatus();
 });
 $("#mainInput").addEventListener("keydown", e=>{
   const open = $("#suggest").classList.contains("show");
