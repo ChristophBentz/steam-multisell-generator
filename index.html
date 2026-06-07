@@ -3,176 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Steam Multisell Link-Generator</title>
+<title>Steam Multisell Generator</title>
 <style>
   :root {
-    --bg: #1b2838;
-    --bg2: #2a475e;
-    --panel: #223344;
-    --panel2: #2c4257;
-    --accent: #66c0f4;
-    --accent2: #4b9fd6;
-    --green: #5ba32b;
-    --green2: #6fc02f;
-    --text: #c7d5e0;
-    --muted: #8095a3;
-    --danger: #c0563f;
-    --border: #3a546b;
-    --radius: 8px;
+    --bg:        #0f1620;
+    --bg-soft:   #141d29;
+    --card:      #18222f;
+    --card-2:    #1e2a39;
+    --line:      #2a3848;
+    --line-soft: #223040;
+    --txt:       #e6edf3;
+    --txt-dim:   #93a4b5;
+    --txt-faint: #647688;
+    --accent:    #66c0f4;
+    --accent-d:  #3a93cf;
+    --green:     #57b94f;
+    --green-d:   #3f9a3a;
+    --amber:     #e0a93b;
+    --danger:    #e0593f;
+    --r:   12px;
+    --r-sm: 8px;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.25);
   }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    font-family: "Motiva Sans", "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(180deg, #1b2838 0%, #16202d 100%);
-    color: var(--text);
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #1c2c3e 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, #16242f 0%, transparent 55%),
+      var(--bg);
+    color: var(--txt);
+    line-height: 1.55;
     min-height: 100vh;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
-  header h1 {
-    font-size: 26px; margin: 0 0 4px; color: #fff; font-weight: 600;
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  /* ---------- Header ---------- */
+  header { margin-bottom: 28px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0;
+    background: linear-gradient(145deg, var(--accent), var(--accent-d));
+    display: grid; place-items: center; font-size: 22px;
+    box-shadow: 0 4px 14px rgba(58,147,207,.4);
   }
-  header .sub { color: var(--muted); margin: 0 0 18px; font-size: 14px; }
-  .note {
-    background: #2a3a2a; border-left: 4px solid var(--green2);
-    padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-bottom: 18px;
+  header h1 { font-size: 21px; margin: 0; font-weight: 650; letter-spacing: -.2px; }
+  header .sub { color: var(--txt-dim); margin: 2px 0 0; font-size: 13.5px; }
+
+  /* ---------- Callouts ---------- */
+  .callouts { display: grid; gap: 10px; margin: 22px 0 26px; }
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--bg-soft); border: 1px solid var(--line-soft);
+    padding: 12px 14px; border-radius: var(--r-sm); font-size: 13px; color: var(--txt-dim);
   }
-  .warn {
-    background: #3a2f22; border-left: 4px solid #d6a14b; color: #e8d4b0;
+  .callout .ic { flex-shrink: 0; font-size: 15px; line-height: 1.4; }
+  .callout strong { color: var(--txt); font-weight: 600; }
+  .callout.tip   { border-left: 3px solid var(--accent); }
+  .callout.warn  { border-left: 3px solid var(--amber); }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 22px; margin-bottom: 18px;
+    box-shadow: var(--shadow);
   }
-  .panel {
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 18px; margin-bottom: 18px;
+  .card-head { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
+  .step {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: var(--card-2); border: 1px solid var(--line);
+    color: var(--accent); font-size: 13px; font-weight: 700;
+    display: grid; place-items: center;
   }
-  .panel h2 {
-    font-size: 16px; margin: 0 0 14px; color: #fff; font-weight: 600;
-    display: flex; align-items: center; gap: 8px;
+  .card-head h2 { font-size: 16px; margin: 0; font-weight: 600; flex: 1; }
+  .badge {
+    background: var(--card-2); border: 1px solid var(--line);
+    color: var(--txt-dim); font-size: 12px; font-weight: 600;
+    padding: 3px 10px; border-radius: 999px; min-width: 26px; text-align: center;
   }
-  .panel h2 .badge {
-    background: var(--bg2); color: var(--accent); font-size: 12px;
-    padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  .badge.live { background: rgba(87,185,79,.14); border-color: rgba(87,185,79,.35); color: #84d97c; }
+
+  /* ---------- Segmented tabs ---------- */
+  .tabs {
+    display: flex; gap: 3px; margin-bottom: 18px; padding: 3px;
+    background: var(--bg-soft); border: 1px solid var(--line-soft); border-radius: 10px;
   }
-  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
   .tab {
-    background: var(--bg2); border: none; color: var(--text); cursor: pointer;
-    padding: 8px 14px; border-radius: 6px; font-size: 13px; transition: .15s;
+    flex: 1; background: transparent; border: none; color: var(--txt-dim);
+    cursor: pointer; padding: 9px 8px; border-radius: 7px; font-size: 13px;
+    font-weight: 550; transition: .15s; font-family: inherit;
   }
-  .tab:hover { background: var(--panel2); }
-  .tab.active { background: var(--accent); color: #102a3a; font-weight: 600; }
-  .tabpane { display: none; }
+  .tab:hover { color: var(--txt); }
+  .tab.active { background: var(--card-2); color: var(--txt); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .tabpane { display: none; animation: fade .2s ease; }
   .tabpane.active { display: block; }
-  label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+  @keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; } }
+
+  /* ---------- Form ---------- */
+  label { display: block; font-size: 12px; color: var(--txt-dim); margin: 0 0 6px; font-weight: 550; }
   input[type=text], textarea, select {
-    width: 100%; background: #16202b; border: 1px solid var(--border);
-    color: var(--text); padding: 9px 11px; border-radius: 6px; font-size: 14px;
-    font-family: inherit;
+    width: 100%; background: var(--bg-soft); border: 1px solid var(--line);
+    color: var(--txt); padding: 11px 13px; border-radius: var(--r-sm); font-size: 14px;
+    font-family: inherit; transition: border-color .15s, box-shadow .15s;
   }
-  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
-  textarea { resize: vertical; min-height: 90px; }
-  .row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .row > * { flex: 1; min-width: 120px; }
-  .field { margin-bottom: 12px; }
-  button.btn {
-    background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
-    border: none; color: #0c2235; font-weight: 600; cursor: pointer;
-    padding: 9px 18px; border-radius: 6px; font-size: 14px; transition: .15s;
+  input::placeholder, textarea::placeholder { color: var(--txt-faint); }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--accent-d);
+    box-shadow: 0 0 0 3px rgba(102,192,244,.13);
   }
-  button.btn:hover { filter: brightness(1.1); }
-  button.btn.green {
-    background: linear-gradient(180deg, var(--green2) 0%, var(--green) 100%); color: #fff;
+  textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+  select { appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%2393a4b5' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat; background-position: right 13px center; padding-right: 34px;
   }
-  button.btn.ghost {
-    background: var(--bg2); color: var(--text); font-weight: 500;
+  .field { margin-bottom: 14px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 130px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+    font-weight: 600; font-size: 14px; padding: 10px 18px; border-radius: var(--r-sm);
+    transition: filter .15s, background .15s, border-color .15s; white-space: nowrap;
   }
-  button.btn.ghost:hover { background: var(--panel2); }
-  button.btn.sm { padding: 5px 10px; font-size: 12px; }
-  button.btn.danger { background: var(--danger); color: #fff; }
-  .item-grid {
-    display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 320px;
-    overflow-y: auto; padding-right: 4px;
-  }
+  .btn:active { transform: translateY(.5px); }
+  .btn.primary { background: linear-gradient(180deg, var(--accent), var(--accent-d)); color: #08283c; }
+  .btn.primary:hover { filter: brightness(1.07); }
+  .btn.green { background: linear-gradient(180deg, var(--green), var(--green-d)); color: #fff; }
+  .btn.green:hover { filter: brightness(1.07); }
+  .btn.ghost { background: var(--card-2); color: var(--txt); border-color: var(--line); }
+  .btn.ghost:hover { background: #25344613; border-color: var(--accent-d); color: var(--txt); }
+  .btn.subtle { background: transparent; color: var(--txt-dim); border-color: var(--line); }
+  .btn.subtle:hover { color: var(--danger); border-color: var(--danger); }
+  .btn.sm { padding: 6px 12px; font-size: 12.5px; }
+  .hint { font-size: 12px; color: var(--txt-faint); margin: 10px 0 0; }
+  .hint code { background: var(--bg-soft); padding: 1px 5px; border-radius: 4px; color: var(--txt-dim); }
+
+  /* ---------- Item lists ---------- */
+  .search { margin-bottom: 12px; }
+  .item-grid { display: grid; gap: 7px; max-height: 340px; overflow-y: auto; padding-right: 2px; }
+  .item-grid::-webkit-scrollbar { width: 8px; }
+  .item-grid::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
   .item-chip {
-    display: flex; align-items: center; justify-content: space-between;
-    background: #16202b; border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 12px; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-soft); border: 1px solid var(--line-soft); border-radius: var(--r-sm);
+    padding: 9px 10px 9px 13px; transition: border-color .15s, background .15s;
   }
-  .item-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item-chip .meta { color: var(--muted); font-size: 12px; margin-right: auto; padding-left: 10px; }
-  .item-chip .actions { display: flex; gap: 6px; flex-shrink: 0; }
-  .star { background: none; border: none; cursor: pointer; font-size: 16px; color: #5a6b78; }
-  .star.on { color: #f0b429; }
-  .cart-group { margin-bottom: 14px; }
-  .cart-group h3 {
-    font-size: 13px; color: var(--accent); margin: 0 0 6px; font-weight: 600;
-    display: flex; align-items: center; gap: 8px;
+  .item-chip:hover { border-color: var(--line); background: var(--card-2); }
+  .item-chip .name { flex: 1; min-width: 0; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-chip .meta { color: var(--txt-faint); font-size: 12px; flex-shrink: 0; }
+  .item-chip .actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .star { background: none; border: none; cursor: pointer; font-size: 16px; color: #44586a; padding: 2px; line-height: 1; transition: color .15s, transform .1s; }
+  .star:hover { transform: scale(1.15); }
+  .star.on { color: var(--amber); }
+
+  /* ---------- Cart groups ---------- */
+  .cart-group { margin-bottom: 16px; }
+  .cart-group:last-child { margin-bottom: 0; }
+  .group-head {
+    display: flex; align-items: center; gap: 8px; margin: 0 0 9px;
+    font-size: 12px; font-weight: 600; color: var(--txt-dim); text-transform: uppercase; letter-spacing: .4px;
   }
-  .link-box {
-    background: #16202b; border: 1px solid var(--border); border-radius: 6px;
-    padding: 10px 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 12px; word-break: break-all; color: var(--accent); margin-bottom: 8px;
+  .group-head .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .group-head .meta { color: var(--txt-faint); font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+  /* ---------- Link box ---------- */
+  .link-block {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--r-sm);
+    padding: 13px; margin-top: 9px;
   }
-  .empty { color: var(--muted); font-size: 14px; font-style: italic; }
+  .link-text {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px;
+    color: var(--accent); word-break: break-all; line-height: 1.5; margin-bottom: 11px;
+    max-height: 86px; overflow-y: auto;
+  }
+  .link-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---------- Misc ---------- */
+  .empty { color: var(--txt-faint); font-size: 13.5px; text-align: center; padding: 14px 0; }
+  .hr { height: 1px; background: var(--line); margin: 16px 0; border: 0; }
+  .footer { text-align: center; font-size: 12px; color: var(--txt-faint); margin-top: 34px; }
+  .footer a { color: var(--txt-dim); }
+
   .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--green); color: #fff; padding: 10px 20px; border-radius: 6px;
-    font-size: 14px; opacity: 0; pointer-events: none; transition: .25s; z-index: 100;
+    position: fixed; bottom: 26px; left: 50%; z-index: 100;
+    transform: translateX(-50%) translateY(16px);
+    background: #14202c; border: 1px solid var(--line);
+    color: var(--txt); padding: 11px 20px; border-radius: 10px;
+    font-size: 13.5px; font-weight: 550; box-shadow: var(--shadow);
+    opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .search { margin-bottom: 10px; }
-  .small { font-size: 12px; color: var(--muted); }
-  a { color: var(--accent); }
-  .hr { height: 1px; background: var(--border); margin: 16px 0; border: none; }
-  details summary { cursor: pointer; color: var(--accent); font-size: 13px; }
-  .count-badge { background: var(--green); color:#fff; border-radius: 10px; padding: 1px 8px; font-size: 12px; }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 28px 14px 64px; }
+    .card { padding: 18px 16px; }
+    .tab { font-size: 12px; padding: 8px 4px; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>🛒 Steam Multisell Link-Generator</h1>
-    <p class="sub">Items zum Warenkorb hinzufügen → fertigen Steam-Multisell-Link erhalten → mehrere Items gleichzeitig im Markt einstellen.</p>
+    <div class="brand">
+      <div class="logo">🛒</div>
+      <div>
+        <h1>Steam Multisell Generator</h1>
+        <p class="sub">Mehrere Items gleichzeitig im Steam-Markt einstellen.</p>
+      </div>
+    </div>
+    <div class="callouts">
+      <div class="callout tip">
+        <span class="ic">💡</span>
+        <span><strong>Kein Login nötig.</strong> Die App baut nur den Link – verkauft wird auf steamcommunity.com, wo du eingeloggt bist. Menge &amp; Preis wählst du dort.</span>
+      </div>
+      <div class="callout warn">
+        <span class="ic">⚠️</span>
+        <span><strong>Nur Commodity-Items</strong> (Cases, Capsules, Sticker, Keys, Karten). Skins funktionieren nicht – Steam zeigt sonst eine Fehlermeldung.</span>
+      </div>
+    </div>
   </header>
 
-  <div class="note">
-    <strong>So funktioniert's:</strong> Der erzeugte Link öffnet auf Steam eine Seite, auf der <em>alle</em> deiner Items dieses Typs zum Verkauf bereitstehen. Du wählst dort nur noch Menge &amp; Preis. Es findet <strong>kein Login über diese App</strong> statt – verkauft wird ausschließlich auf steamcommunity.com.
-  </div>
-  <div class="note warn">
-    <strong>Wichtig:</strong> Funktioniert nur für <strong>Commodity-Items</strong> (Cases, Capsules, Sticker, Keys, Sammelkarten). <strong>Skins funktionieren nicht</strong> – Steam zeigt dann eine Fehlermeldung. Eine Stückzahl lässt sich nicht im Link festlegen; die wählst du auf der Steam-Seite.
-  </div>
-
-  <!-- ADD ITEMS -->
-  <div class="panel">
-    <h2>1. Items hinzufügen</h2>
+  <!-- 1 · ADD ITEMS -->
+  <section class="card">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2>Items hinzufügen</h2>
+    </div>
     <div class="tabs">
-      <button class="tab active" data-tab="link">🔗 Market-Link einfügen</button>
-      <button class="tab" data-tab="db">📚 Aus Liste wählen</button>
+      <button class="tab active" data-tab="link">🔗 Market-Link</button>
+      <button class="tab" data-tab="db">📚 Aus Liste</button>
       <button class="tab" data-tab="manual">✏️ Manuell</button>
     </div>
 
-    <!-- TAB: link parser -->
     <div class="tabpane active" id="tab-link">
       <div class="field">
         <label>Steam-Market-Link(s) – einer pro Zeile</label>
         <textarea id="linkInput" placeholder="https://steamcommunity.com/market/listings/730/Kilowatt%20Case&#10;https://steamcommunity.com/market/listings/440/Mann%20Co.%20Supply%20Crate%20Key"></textarea>
       </div>
-      <button class="btn" id="parseBtn">Links auslesen &amp; hinzufügen</button>
-      <p class="small" style="margin-top:8px">Öffne ein Item im Steam-Markt und kopiere die Adresse aus der Browserzeile. App + Item-Name werden automatisch erkannt.</p>
+      <button class="btn primary" id="parseBtn">Auslesen &amp; hinzufügen</button>
+      <p class="hint">Öffne ein Item im Steam-Markt und kopiere die Adresse aus der Browserzeile. App &amp; Name werden automatisch erkannt.</p>
     </div>
 
-    <!-- TAB: database -->
     <div class="tabpane" id="tab-db">
-      <div class="row" style="margin-bottom:12px">
-        <div>
-          <label>Spiel</label>
-          <select id="gameSelect"></select>
-        </div>
+      <div class="field">
+        <label>Spiel</label>
+        <select id="gameSelect"></select>
       </div>
-      <input class="search" type="text" id="dbSearch" placeholder="Items filtern…">
+      <input class="search" type="text" id="dbSearch" placeholder="🔍  Items filtern…">
       <div class="item-grid" id="dbList"></div>
     </div>
 
-    <!-- TAB: manual -->
     <div class="tabpane" id="tab-manual">
       <div class="row">
         <div class="field">
@@ -185,46 +271,59 @@
         </div>
       </div>
       <div class="field">
-        <label>Item-Name (exakt, wie im Markt – Groß/Kleinschreibung beachten)</label>
+        <label>Item-Name (exakt – Groß/Kleinschreibung beachten)</label>
         <input type="text" id="mName" placeholder="Kilowatt Case">
       </div>
-      <button class="btn" id="manualAddBtn">Zum Warenkorb hinzufügen</button>
-      <p class="small" style="margin-top:8px">App-IDs: CS2 = 730, TF2 = 440, Dota 2 = 570. Context-ID ist meist <code>2</code> (Sammelkarten oft <code>6</code>).</p>
+      <button class="btn primary" id="manualAddBtn">Hinzufügen</button>
+      <p class="hint">App-IDs: CS2 <code>730</code> · TF2 <code>440</code> · Dota 2 <code>570</code>. Context-ID meist <code>2</code> (Karten <code>6</code>).</p>
     </div>
-  </div>
+  </section>
 
   <!-- FAVORITES -->
-  <div class="panel" id="favPanel" style="display:none">
-    <h2>⭐ Favoriten</h2>
+  <section class="card" id="favPanel" style="display:none">
+    <div class="card-head">
+      <span class="step">⭐</span>
+      <h2>Favoriten</h2>
+    </div>
     <div class="item-grid" id="favList"></div>
-  </div>
+  </section>
 
-  <!-- CART -->
-  <div class="panel">
-    <h2>2. Warenkorb <span class="badge" id="cartCount">0</span></h2>
+  <!-- 2 · CART -->
+  <section class="card">
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2>Warenkorb</h2>
+      <span class="badge" id="cartCount">0</span>
+    </div>
     <div id="cartArea"><p class="empty">Noch keine Items im Warenkorb.</p></div>
     <hr class="hr" id="cartHr" style="display:none">
     <div id="cartActions" style="display:none">
-      <button class="btn ghost sm danger" id="clearCart">Warenkorb leeren</button>
+      <button class="btn subtle sm" id="clearCart">Warenkorb leeren</button>
     </div>
-  </div>
+  </section>
 
-  <!-- LINKS -->
-  <div class="panel">
-    <h2>3. Multisell-Link(s)</h2>
-    <p class="small" id="linkHint">Pro Spiel wird ein eigener Link erzeugt (Steam erlaubt nur ein Spiel pro Link).</p>
+  <!-- 3 · LINKS -->
+  <section class="card">
+    <div class="card-head">
+      <span class="step">3</span>
+      <h2>Multisell-Link</h2>
+    </div>
+    <p class="hint" id="linkHint" style="margin-top:-6px;margin-bottom:14px">Pro Spiel ein eigener Link – Steam erlaubt nur ein Spiel pro Link.</p>
     <div id="linksArea"><p class="empty">Füge Items hinzu, um Links zu erzeugen.</p></div>
-  </div>
+  </section>
 
   <!-- HISTORY -->
-  <div class="panel" id="histPanel" style="display:none">
-    <h2>🕒 Verlauf</h2>
+  <section class="card" id="histPanel" style="display:none">
+    <div class="card-head">
+      <span class="step">🕒</span>
+      <h2>Verlauf</h2>
+    </div>
     <div id="histList"></div>
     <hr class="hr">
-    <button class="btn ghost sm danger" id="clearHist">Verlauf löschen</button>
-  </div>
+    <button class="btn subtle sm" id="clearHist">Verlauf löschen</button>
+  </section>
 
-  <p class="small" style="text-align:center;margin-top:30px">
+  <p class="footer">
     Inoffizielles Tool · keine Verbindung zu Valve/Steam · alle Daten bleiben lokal im Browser.
   </p>
 </div>
@@ -268,17 +367,13 @@ const GAMES = {
 };
 
 // ---------- Storage ----------
-const LS = {
-  cart: "sms_cart_v1",
-  fav: "sms_fav_v1",
-  hist: "sms_hist_v1"
-};
+const LS = { cart: "sms_cart_v1", fav: "sms_fav_v1", hist: "sms_hist_v1" };
 const load = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
 const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-let cart = load(LS.cart, []);      // [{appid, contextid, name}]
-let favs = load(LS.fav, []);       // [{appid, contextid, name}]
-let hist = load(LS.hist, []);      // [{date, links:[{appid,name,url}]}]
+let cart = load(LS.cart, []);
+let favs = load(LS.fav, []);
+let hist = load(LS.hist, []);
 
 // ---------- Helpers ----------
 const $ = s => document.querySelector(s);
@@ -292,7 +387,6 @@ function toast(msg) {
 }
 
 function buildLinks() {
-  // gruppiere nach appid+contextid
   const groups = {};
   for (const it of cart) {
     const g = `${it.appid}|${it.contextid}`;
@@ -325,7 +419,7 @@ function toggleFav(it) {
   const k = keyOf(it);
   if (favs.some(f => keyOf(f) === k)) favs = favs.filter(f => keyOf(f) !== k);
   else favs.push(it);
-  save(LS.fav, favs); renderFavs(); renderDb();
+  save(LS.fav, favs); renderFavs(); renderDb(); renderCart();
 }
 const isFav = it => favs.some(f => keyOf(f) === keyOf({appid:String(it.appid),contextid:String(it.contextid||"2"),name:it.name}));
 
@@ -352,7 +446,8 @@ function renderCart() {
   area.innerHTML = Object.entries(groups).map(([g, items]) => {
     const [appid, ctx] = g.split("|");
     return `<div class="cart-group">
-      <h3>${gameName(appid)} <span class="small">(App ${appid}, ctx ${ctx})</span> <span class="count-badge">${items.length}</span></h3>
+      <div class="group-head"><span class="dot"></span>${escapeHtml(gameName(appid))}
+        <span class="meta">· App ${appid} · ${items.length} Item(s)</span></div>
       ${items.map(it => `<div class="item-chip">
         <span class="name">${escapeHtml(it.name)}</span>
         <span class="actions">
@@ -369,10 +464,15 @@ function renderLinks() {
   const links = buildLinks();
   area.innerHTML = links.map((l, i) => `
     <div class="cart-group">
-      <h3>${gameName(l.appid)} <span class="small">· ${l.names.length} Item(s)</span></h3>
-      <div class="link-box">${escapeHtml(l.url)}</div>
-      <button class="btn green sm" data-open="${i}">▶ In Steam öffnen</button>
-      <button class="btn ghost sm" data-copy="${i}">📋 Kopieren</button>
+      <div class="group-head"><span class="dot"></span>${escapeHtml(gameName(l.appid))}
+        <span class="meta">· ${l.names.length} Item(s)</span></div>
+      <div class="link-block">
+        <div class="link-text">${escapeHtml(l.url)}</div>
+        <div class="link-actions">
+          <button class="btn green sm" data-open="${i}">▶ In Steam öffnen</button>
+          <button class="btn ghost sm" data-copy="${i}">📋 Kopieren</button>
+        </div>
+      </div>
     </div>`).join("");
   area._links = links;
 }
@@ -383,9 +483,9 @@ function renderFavs() {
   panel.style.display = "block";
   list.innerHTML = favs.map(it => `<div class="item-chip">
     <span class="name">${escapeHtml(it.name)}</span>
-    <span class="meta">${gameName(it.appid)}</span>
+    <span class="meta">${escapeHtml(gameName(it.appid))}</span>
     <span class="actions">
-      <button class="btn green sm" data-addfav='${attr(it)}'>+ Warenkorb</button>
+      <button class="btn green sm" data-addfav='${attr(it)}'>+ Korb</button>
       <button class="star on" data-fav='${attr(it)}'>★</button>
     </span></div>`).join("");
 }
@@ -397,7 +497,7 @@ function renderDb() {
   const list = $("#dbList");
   const items = (game?.items || []).filter(n => n.toLowerCase().includes(q));
   if (!items.length) {
-    list.innerHTML = '<p class="empty">Keine Items – nutze „Market-Link einfügen" oder „Manuell".</p>';
+    list.innerHTML = '<p class="empty">Keine Items – nutze „Market-Link" oder „Manuell".</p>';
     return;
   }
   list.innerHTML = items.map(name => {
@@ -406,7 +506,7 @@ function renderDb() {
       <span class="name">${escapeHtml(name)}</span>
       <span class="actions">
         <button class="star ${isFav(it)?'on':''}" data-fav='${attr(it)}'>★</button>
-        <button class="btn green sm" data-add='${attr(it)}'>+ Warenkorb</button>
+        <button class="btn green sm" data-add='${attr(it)}'>+ Korb</button>
       </span></div>`;
   }).join("");
 }
@@ -417,9 +517,9 @@ function renderHist() {
   panel.style.display = "block";
   list.innerHTML = hist.slice().reverse().map(h => `
     <div class="cart-group">
-      <h3>${new Date(h.date).toLocaleString("de-DE")}</h3>
+      <div class="group-head"><span class="dot"></span>${new Date(h.date).toLocaleString("de-DE")}</div>
       ${h.links.map(l => `<div class="item-chip">
-        <span class="name">${gameName(l.appid)} · ${l.names.length} Item(s)</span>
+        <span class="name">${escapeHtml(gameName(l.appid))} · ${l.names.length} Item(s)</span>
         <span class="actions">
           <button class="btn green sm" data-histopen="${escapeHtml(l.url)}">▶ Öffnen</button>
           <button class="btn ghost sm" data-histcopy="${escapeHtml(l.url)}">📋</button>
@@ -432,7 +532,6 @@ function parseMarketLinks(text) {
   const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
   let added = 0, failed = 0;
   for (const line of lines) {
-    // /market/listings/{appid}/{market_hash_name}
     const m = line.match(/market\/listings\/(\d+)\/([^/?#\s]+)/i);
     if (!m) { failed++; continue; }
     const appid = m[1];
@@ -482,7 +581,6 @@ $("#manualAddBtn").addEventListener("click", () => {
 $("#dbSearch").addEventListener("input", renderDb);
 $("#gameSelect").addEventListener("change", renderDb);
 
-// Delegierte Klicks
 document.body.addEventListener("click", e => {
   const t = e.target.closest("button"); if (!t) return;
   if (t.dataset.add) addToCart(parseAttr(t.dataset.add));
