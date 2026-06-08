@@ -37,7 +37,7 @@ Installation und **kein Steam-Login** in der App nötig. Einfach im Browser öff
 
 | Spiel    | App-ID | Context-ID | Eingebaute Liste |
 |----------|--------|------------|------------------|
-| CS2/CS:GO| 730    | 2          | ✅ voll (Live-Katalog, ~462 Container) |
+| CS2/CS:GO| 730    | 2          | ✅ voll (Live-Katalog, ~469 Container) |
 | TF2      | 440    | 2          | ✅ Keys, Tickets, Tools, Crate-Serien |
 | Dota 2   | 570    | 2          | Market-Link nutzen |
 | Rust     | 252490 | 2          | Market-Link nutzen |
@@ -47,6 +47,21 @@ Installation und **kein Steam-Login** in der App nötig. Einfach im Browser öff
 > Nur CS2 hat eine saubere, CORS-fähige Katalog-API ([ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API)).
 > Für die übrigen Spiele ist das Einfügen des Market-Links der zuverlässige Weg – damit
 > funktioniert jedes Commodity-Item exakt.
+
+## Tech Stack
+
+Bewusst minimal – eine einzige statische Datei, kein Framework, kein Build, kein Backend.
+
+- **Frontend:** Vanilla **HTML5 + CSS + JavaScript (ES6+)**, komplett in `index.html`.
+  Keine Libraries, kein React/Vue/jQuery, kein Build-Step, keine Dependencies.
+- **Persistenz:** Browser-`localStorage` (Warenkorb, Favoriten, Verlauf) – keine Datenbank.
+- **Katalog:** `cs2-items.json` (schlanke Namensliste) wird per `fetch()` geladen.
+  Erzeugt durch ein **Python**-Skript (`build-cs2-items.py`) aus der
+  [ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API). Python wird nur offline zum
+  Generieren gebraucht, **nicht** zur Laufzeit.
+- **Hosting:** GitHub (liefert auch `cs2-items.json` via `raw.githubusercontent.com`);
+  optional GitHub Pages.
+- **Kein** Server, **kein** API-Key, **keine** Steam-Anmeldung in der App.
 
 ## Lizenz
 
